@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "ffdaca18-99dc-417c-ae72-c34be60f28ec",
+		"name": "SyntaxBatch19API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36778043"
+	},
+	"item": [
+		{
+			"name": "Create an Admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"admin\",\r\n  \"email\": \"admin007@gmail.com\",\r\n  \"password\": \"Abc123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{QABaseURL}}{{CreateAdminUser}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"admin007@gmail.com\",\r\n  \"password\": \"Abc123!\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{QABaseURL}}{{GenerateToken}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Create an Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validating the status code here which is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Employee Created\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 900ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(900);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Connection is present\", function () {\r",
+							"    pm.response.to.have.header(\"Connection\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"console.log(\"This is my Test Date\") // This is like sout\r",
+							"\r",
+							"pm.test(\"Validate the body in json format\", function(){\r",
+							"    const responseData = pm.response.json();\r",
+							"    console.log(responseData)\r",
+							"    pm.expect(responseData.Employee.emp_firstname).to.eql(\"Ali\");\r",
+							"    pm.expect(responseData.Employee.emp_middle_name).to.eql(\"MS\");\r",
+							"    pm.expect(responseData.Employee.emp_lastname).to.eql(\"Zafar\");\r",
+							"    pm.expect(responseData.Employee.emp_status).to.eql(\"Employed\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"emp_firstname\": \"Ali\",\r\n  \"emp_lastname\": \"Zafar\",\r\n  \"emp_middle_name\": \"MS\",\r\n  \"emp_gender\": \"M\",\r\n  \"emp_birthday\": \"1985-07-06\",\r\n  \"emp_status\": \"Employed\",\r\n  \"emp_job_title\": \"Singer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{QABaseURL}}{{CreateAnEmployee}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Get One Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{QABaseURL}}{{GetAnEmployee}}?employee_id=109401A",
+					"host": [
+						"{{QABaseURL}}{{GetAnEmployee}}"
+					],
+					"query": [
+						{
+							"key": "employee_id",
+							"value": "109401A"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Job Titles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"url": "{{QABaseURL}}{{GetJobTitles}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update an Employee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"employee_id\": \"109401A\",\r\n  \"emp_firstname\": \"Nusrat\",\r\n  \"emp_lastname\": \"Khan\",\r\n  \"emp_middle_name\": \"FA\",\r\n  \"emp_gender\": \"M\",\r\n  \"emp_birthday\": \"1963-07-10\",\r\n  \"emp_status\": \"Temp\",\r\n  \"emp_job_title\": \"Singer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{QABaseURL}}{{UpdateEmployee}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Partial Employee Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"employee_id\": \"109401A\",\r\n  \"emp_firstname\": \"Rahat\",\r\n  \"emp_lastname\": \"Khans\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{QABaseURL}}{{PartiallyUpdateEmployee}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete an Employee",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{JWT}}",
+						"type": "text"
+					}
+				],
+				"url": "{{QABaseURL}}{{DeleteEmployee}}"
+			},
+			"response": []
+		}
+	]
+}
